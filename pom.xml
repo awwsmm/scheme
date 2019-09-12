@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+
+
+  <!-- The Basics ========================================================== -->
+  <!-- Layout guide: http://bit.ly/2Nr7MQS -->
+
+  <groupId>     awwsmm.scheme  </groupId>
+  <artifactId>  scheme         </artifactId>
+  <packaging>   jar            </packaging>
+
+  <version>1.0</version>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <properties>
+
+    <!-- FOR: preventing platform encoding warnings -->
+    <!-- source: http://bit.ly/2v7PHzD -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+
+    <!-- FOR: specifying java version is necessary -->
+    <!-- source: http://bit.ly/2v2Teio -->
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+
+  </properties>
+
+  <!-- Build Settings  ===================================================== -->
+
+  <build>
+
+    <plugins>
+    </plugins>
+
+  </build>
+
+  <reporting>
+    <plugins>
+
+      <!-- FOR: generating javadocs during 'mvn site' -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.0.0</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.0.1</version>
+        <configuration>
+          <detectLinks>true</detectLinks>
+
+          <!-- FOR: necessary for links to JUnit API in Javadocs? -->
+          <links>
+            <link>https://junit.org/junit4/javadoc/latest</link>
+          </links>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </reporting>
+
+  <!-- More Project Information  =========================================== -->
+
+  <name>scheme</name>
+  <description>A minimal package for intelligently inferring schemata of CSV files.</description>
+  <url>https://github.com/awwsmm/scheme</url>
+  <inceptionYear>2019</inceptionYear>
+
+  <organization>
+    <name>NIBRT</name>
+    <url>https://www.nibrt.ie</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>andrew</id>
+      <name>Andrew Watson</name>
+      <email>andrew.watson@nibrt.ie</email>
+      <organization>NIBRT</organization>
+      <organizationUrl>https://www.nibrt.ie</organizationUrl>
+      <roles>
+        <role>Lead Software Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+</project>
