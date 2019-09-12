@@ -15,17 +15,6 @@
 
   <version>1.0</version>
 
-  <dependencies>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.8.1</version>
-      <scope>test</scope>
-    </dependency>
-
-  </dependencies>
-
   <properties>
 
     <!-- FOR: preventing platform encoding warnings -->
@@ -43,16 +32,70 @@
   <!-- Build Settings  ===================================================== -->
 
   <build>
-
-    <plugins>
-    </plugins>
-
-  </build>
-
-  <reporting>
     <plugins>
 
-      <!-- FOR: generating javadocs during 'mvn site' -->
+      <!-- for JaCoCo code coverage report -->
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.3</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>generate-code-coverage-report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.7.1</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+          <testSource>1.8</testSource>
+          <testTarget>1.8</testTarget>
+          <compilerArgument>-Xlint:unchecked</compilerArgument>
+        </configuration>
+      </plugin>
+
+      <!-- for code coverage GitHub badge -->
+
+      <plugin>
+        <groupId>io.github.handofgod94</groupId>
+        <artifactId>jacoco-cov-badge-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <executions>
+          <execution>
+            <id>generate-badge</id>
+            <phase>post-site</phase>
+            <configuration>
+            </configuration>
+            <goals>
+              <goal>badge</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- for generating Javadoc -->
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
@@ -64,17 +107,29 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.0.1</version>
         <configuration>
-          <detectLinks>true</detectLinks>
 
-          <!-- FOR: necessary for links to JUnit API in Javadocs? -->
-          <links>
-            <link>https://junit.org/junit4/javadoc/latest</link>
-          </links>
+          <!-- for GitHub pages -->
+          <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
+          <destDir>docs</destDir>
+
+          <detectLinks>true</detectLinks>
         </configuration>
+
       </plugin>
 
     </plugins>
-  </reporting>
+
+    <!-- FOR: retrieving project properties from external file -->
+    <!-- sources: http://bit.ly/2Lt4Lmg and http://bit.ly/2LnE8z2 -->
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+  </build>
 
   <!-- More Project Information  =========================================== -->
 
