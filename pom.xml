@@ -15,6 +15,18 @@
 
   <version>1.0</version>
 
+  <dependencies>
+
+    <!-- for JUnit 5 unit tests -->
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.3.2</version>
+        <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
   <properties>
 
     <!-- FOR: preventing platform encoding warnings -->
