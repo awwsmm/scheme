@@ -1,4 +1,4 @@
-public class TestScheme {
+public class TestCSV {
 
   // /**
   //  * test contains()
