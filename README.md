@@ -5,10 +5,14 @@ A minimal package for intelligently inferring schemata of CSV files.
 ![JaCoCo Java Code Coverage Score](target/coverage.svg) [![Build Status](https://travis-ci.com/awwsmm/scheme.svg?branch=master)](https://travis-ci.com/awwsmm/scheme) [![Link to Javadoc](https://awwsmm.github.io/scheme/javadoc.svg)](https://awwsmm.github.io/scheme/)
 
 __Self-contained__ -- no external dependencies
+
 __Compatible__ -- runs on any Java version >= 8
+
 __Easy__ -- works immediately with no configuration required
 
-Example usage:
+Built to more intelligently infer schemata for creating Parquet files from CSV.
+
+## Usage
 
 ```bash
 $ cat example.csv
@@ -32,5 +36,3 @@ jshell> import static scheme.CSV.schema
 jshell> schema("example.csv")
 $2 ==> [myint1=class java.lang.Byte, datetime=class java.time.LocalDateTime, myint2=class java.lang.Byte, myfloat=class java.lang.Float, mybool=class java.lang.Boolean]
 ```
-
-Built to more intelligently infer schemata for creating Parquet files from CSV.

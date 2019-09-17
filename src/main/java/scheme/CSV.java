@@ -101,6 +101,12 @@ public class CSV {
   }
 
   public static List<Entry<String, Class<?>>> schema (String file,
+    boolean bool01, boolean commonTypes, boolean postfixFL, boolean parseDates)
+    throws FileNotFoundException, IOException {
+    return schema(file, -1, -1, 35, bool01, commonTypes, postfixFL, parseDates);
+  }
+
+  public static List<Entry<String, Class<?>>> schema (String file,
     int firstHeaderRowIndex, int lastHeaderRowIndex, int nTestRows,
     boolean bool01, boolean commonTypes, boolean postfixFL, boolean parseDates)
     throws FileNotFoundException, IOException {
@@ -214,6 +220,10 @@ public class CSV {
       }
     }
 
+    // save header extents to class variable
+    headerExtents[0] = firstHeaderRow;
+    headerExtents[1] = lastHeaderRow;
+
     //--------------------------------------------------------------------------
     //
     //  Step 3: parse column headers or generate dummy ones
@@ -279,6 +289,16 @@ public class CSV {
 
     return schema;
 
+  }
+
+  private static int[] headerExtents = new int[]{-1, -1};
+
+  public static int[] headerExtents() {
+
+    int[] extents = new int[2];
+    System.arraycopy(headerExtents, 0, extents, 0, 2);
+
+    return extents;
   }
 
 }
