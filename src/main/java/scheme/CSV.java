@@ -16,7 +16,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.time.LocalDateTime;
 
+/**
+ * Class for working with comma-separated values (CSVs) within <em>scheme</em>.
+ */
 public class CSV {
 
   // private default constructor because this is a utility class
@@ -95,17 +99,128 @@ public class CSV {
 
   }
 
+  private static int[] headerExtents = new int[]{-1, -1};
+
+  /**
+   * Returns the extents (line / row indices) which define the header region of
+   * the most recently-analysed CSV file.
+   * 
+   * <p>Returns {@code int[]{-1, -1}} if no header region was found. Otherwise,
+   * if both array elements are equal, then the header is just a single line.</p>
+   * 
+   * @return a two-element {@link int} array giving the first (inclusive) and
+   * last (exclusive) row index (0-based) of the header region
+   */
+  public static int[] headerExtents() {
+
+    int[] extents = new int[2];
+    System.arraycopy(headerExtents, 0, extents, 0, 2);
+
+    return extents;
+  }
+
+  /**
+   * Works just like
+   * {@link #schema(String, boolean, boolean, boolean, boolean) schema()},
+   * but {@code bool01}, {@code commonTypes}, {@code postfixFL}, and
+   * {@code parseDates} are set to {@code false}, {@code false}, {@code false}, 
+   * and {@code true}, respectively.
+   * 
+   * @param file the path of the CSV file to parse
+   * @return a {@code List<Entry<String, Class<?>>>} describing the schema of
+   * this CSV file, where the {@link String} of each entry is the inferred
+   * column name and the {@link Class} is the inferred column class
+   * @throws FileNotFoundException if {@code file} refers to a file which does
+   * not exist
+   * @throws IOException if there was a problem reading the {@code file}
+   */
   public static List<Entry<String, Class<?>>> schema (String file)
     throws FileNotFoundException, IOException {
     return schema(file, -1, -1, 35, false, false, false, true);
   }
 
+  /**
+   * Works just like
+   * {@link #schema(String, int, int, int, boolean, boolean, boolean, boolean) schema()},
+   * but {@code firstHeaderRowIndex}, {@code lastHeaderRowIndex}, and
+   * {@code nTestRows} are set to -1, -1, and 35, respectively.
+   * 
+   * <p>Setting {@code firstHeaderRowIndex} and {@code lastHeaderRowIndex} to -1
+   * indicates that those values will be inferred by
+   * {@link #schema(String, int, int, int, boolean, boolean, boolean, boolean) schema()},
+   * which performs an analysis of row types to determine the header row
+   * extents.</p>
+   * 
+   * @param file the path of the CSV file to parse
+   * @param bool01 if {@code true}, {@code '0'} and {@code '1'} are interpreted
+   * as {@code boolean}s
+   * @param commonTypes if {@code true}, the returned class will only be one of
+   * four "common" classes -- {@link Boolean}, {@link String}, {@link Double},
+   * and {@link LocalDateTime}
+   * @param postfixFL if {@code true}, explicit {@code float}s and {@code long}s
+   * (i.e. {@code "1.1F"} or {@code "13l"}) will be interpreted, otherwise,
+   * they're interpreted as {@link String}s
+   * @param parseDates if {@code true}, date-time-formatted {@code String}s will
+   * be interpreted as {@link LocalDateTime}s, otherwise, they'll be left as
+   * {@link String}s
+   * @return a {@code List<Entry<String, Class<?>>>} describing the schema of
+   * this CSV file, where the {@link String} of each entry is the inferred
+   * column name and the {@link Class} is the inferred column class
+   * @throws FileNotFoundException if {@code file} refers to a file which does
+   * not exist
+   * @throws IOException if there was a problem reading the {@code file}
+   */
   public static List<Entry<String, Class<?>>> schema (String file,
     boolean bool01, boolean commonTypes, boolean postfixFL, boolean parseDates)
     throws FileNotFoundException, IOException {
     return schema(file, -1, -1, 35, bool01, commonTypes, postfixFL, parseDates);
   }
 
+  /**
+   * Given a path to a CSV {@code file}, and a list of options, this method
+   * attempts to determine the schema of the data contained within the file.
+   * 
+   * <p>The schema is a {@link List} of {@link Entry}s, where each {@code Entry}
+   * contains two values, (1) a {@link String} column name, and (2) a
+   * {@link Class} that's been inferred from the type of data contained
+   * within that column.</p>
+   * 
+   * <p>If the user provides an invalid {@code firstHeaderRowIndex} or
+   * {@code lastHeaderRowIndex}, the columns will be labeled {@code X1...XN},
+   * where {@code N} is the number of columns in the file.</p>
+   * 
+   * <p>The minimum number of rows required to analyse and make a decent guess
+   * at the type of data contained within a column is 7. This, plus a 10-row
+   * metadata / header row buffer, is the minimum number of rows to be analysed.
+   * If the user provides a value for {@code nTestRows} that is less than 17,
+   * it will be increased to 17. Increase this value for a more confident guess
+   * at the type of data contained within a column.</p>
+   * 
+   * @param file the path of the CSV file to parse
+   * @param firstHeaderRowIndex a fixed row / line index (0-based) for the
+   * beginning of the column header region
+   * @param lastHeaderRowIndex a fixed row / line index (0-based) for the end
+   * of the column header region
+   * @param nTestRows the number of rows to analyse for determining the types of
+   * data held within each column
+   * @param bool01 if {@code true}, {@code '0'} and {@code '1'} are interpreted
+   * as {@code boolean}s
+   * @param commonTypes if {@code true}, the returned class will only be one of
+   * four "common" classes -- {@link Boolean}, {@link String}, {@link Double},
+   * and {@link LocalDateTime}
+   * @param postfixFL if {@code true}, explicit {@code float}s and {@code long}s
+   * (i.e. {@code "1.1F"} or {@code "13l"}) will be interpreted, otherwise,
+   * they're interpreted as {@link String}s
+   * @param parseDates if {@code true}, date-time-formatted {@code String}s will
+   * be interpreted as {@link LocalDateTime}s, otherwise, they'll be left as
+   * {@link String}s
+   * @return a {@code List<Entry<String, Class<?>>>} describing the schema of
+   * this CSV file, where the {@link String} of each entry is the inferred
+   * column name and the {@link Class} is the inferred column class
+   * @throws FileNotFoundException if {@code file} refers to a file which does
+   * not exist
+   * @throws IOException if there was a problem reading the {@code file}
+   */
   public static List<Entry<String, Class<?>>> schema (String file,
     int firstHeaderRowIndex, int lastHeaderRowIndex, int nTestRows,
     boolean bool01, boolean commonTypes, boolean postfixFL, boolean parseDates)
@@ -289,16 +404,6 @@ public class CSV {
 
     return schema;
 
-  }
-
-  private static int[] headerExtents = new int[]{-1, -1};
-
-  public static int[] headerExtents() {
-
-    int[] extents = new int[2];
-    System.arraycopy(headerExtents, 0, extents, 0, 2);
-
-    return extents;
   }
 
 }

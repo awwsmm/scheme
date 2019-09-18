@@ -4,7 +4,9 @@
                       http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-
+  <!-- to build:
+    mvn clean package javadoc:javadoc io.github.handofgod94:jacoco-cov-badge-maven-plugin:1.0.0:badge
+    -->
 
   <!-- The Basics ========================================================== -->
   <!-- Layout guide: http://bit.ly/2Nr7MQS -->

@@ -13,7 +13,10 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Optional;
 
-/** Class for working with date-time formats in <emph>scheme</emph>. */
+/**
+ * Utility class for working with date-time formats
+ * within <em>scheme</em>.
+ */
 public class DateTimeFormats {
 
   // * private default constructor because this is a utility class

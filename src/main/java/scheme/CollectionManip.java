@@ -8,6 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Utility class which provides functions for working with {@link Collection}s,
+ * {@link CharSequence}s, {@link Iterable}s, and arrays within <em>scheme</em>.
+ */
 public class CollectionManip {
 
   // * private default constructor because this is a utility class
@@ -134,9 +138,10 @@ public class CollectionManip {
 
     // groups of types
     boolean hasNumeric =
-      hasByte || hasDouble || hasFloat || hasInteger || hasLong || hasShort;
+      hasDouble || hasFloat || hasLong || hasInteger || hasShort || hasByte;
+
     boolean hasNonNumeric =
-      hasBoolean || hasCharacter || hasLocalDateTime || hasString;
+      hasLocalDateTime || hasCharacter || hasBoolean;
 
     // if any numeric type and any non-numeric type, return String
     if (hasNumeric && hasNonNumeric) return String.class;
@@ -171,6 +176,7 @@ public class CollectionManip {
    * {@code List}s (as rows), then the returned transposed {@code List<List<T>>}
    * will contain{@code null} values down that row's corresponding column.</p>
    *
+   * @param <T> type of objects contained within the inner {@link List}s
    * @param listOfLists {@code List} of {@code List}s to transpose
    * @return listOfLists, transposed, with {@code null} values representing
    * empty or missing "cells"
@@ -242,6 +248,8 @@ public class CollectionManip {
    * the {@link Iterable} interface. Ones of note are {@link Collection},
    * {@link List}, and {@link Set}.</p>
    *
+   * @param <U> type of objects contained within the {@link Iterable}s
+   * @param <T> {@code Iterable<U>} or a subclass
    * @param A first {@link Iterable} to compare
    * @param B second {@link Iterable} to compare
    *
@@ -282,7 +290,7 @@ public class CollectionManip {
     if (itB.hasNext()) return 0.0;
 
     // if A is empty, no comparison can be made
-    if (size == 0) return 0.0;
+    if (size < 1) return 0.0;
 
     // normalise similarity and return
     return similarity / size;

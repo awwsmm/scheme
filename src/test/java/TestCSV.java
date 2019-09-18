@@ -1,71 +1,63 @@
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static scheme.CSV.*;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Map.Entry;
+
 public class TestCSV {
 
-  // /**
-  //  * test contains()
-  //  */
-  // @Test
-  // public void testContains() {
+  // private method to read resource file from this repo
+  private String getResourcePath (String name) throws FileNotFoundException, IOException {
 
-  //   // create some objects to play with later
-  //   Object  o = new Object();
-  //   Integer i = 42;
-  //   String  s = "test";
+    URL url = TestCSV.class.getClassLoader().getResource(name);
+    String path = (new File(url.getFile())).getAbsolutePath();
 
-  //   // create some arrays
-  //   Object[] oarr0 = new Object[]{};
-  //   Object[] oarr1 = new Object[]{ null, o, null, i, null, s };
-  //   Object[] oarr2 = new Object[]{ o, i, s };
+    return path;
+  }
 
-  //   // * test that a null target array always returns false (contains nothing)
-  //   assertFalse(contains(null, null));
-  //   assertFalse(contains(null, o));
+  /**
+   * test schema()
+   */
+  @Test
+  public void test_schema() throws FileNotFoundException, IOException {
 
-  //   // * test that an empty target array always returns false (contains nothing)
-  //   assertFalse(contains(oarr0, null));
-  //   assertFalse(contains(oarr0, o));
+    // path to resource (example CSV) file
+    String filename = getResourcePath("example0.csv");
 
-  //   // * test that contains() returns true when the target contains the source
-  //   assertTrue(contains(oarr1, o));
-  //   assertTrue(contains(oarr1, s));
-  //   assertTrue(contains(oarr1, "test")); // note: we use equals(), not ==
-  //   assertTrue(contains(oarr2, "test")); // note: we use equals(), not ==
-  //   assertTrue(contains(oarr1, null));
+    // get schema
+    List<Entry<String, Class<?>>> schema = schema(filename);
 
-  //   // * and false otherwise
-  //   assertFalse(contains(oarr2, null));
+    // verify column names of example CSV file
+    assertEquals("one",   schema.get(0).getKey());
+    assertEquals("two",   schema.get(1).getKey());
+    assertEquals("three", schema.get(2).getKey());
+    assertEquals("four",  schema.get(3).getKey());
 
-  // }
+    // verify classes of example CSV file
+    assertEquals(    Byte.class, schema.get(0).getValue() );
+    assertEquals( Boolean.class, schema.get(1).getValue() );
+    assertEquals(  String.class, schema.get(2).getValue() );
+    assertEquals( Integer.class, schema.get(3).getValue() );
 
-  // /**
-  //  * test containsAny()
-  //  */
-  // @Test
-  // public void testContainsAny() {
+    // assert that an empty file returns null
+    filename = getResourcePath("example1.csv");
+    assertNull(schema(filename));
 
-  //   // create some CharSequences
-  //   String s = "hello";
+    // parse a file with multiple header rows
+    filename = getResourcePath("example2.csv");
+    schema = schema(filename, 0, 1, 10, false, false, false, true);
+    System.out.println(schema);
 
-  //   // * test that a null target always returns false (contains nothing)
-  //   assertFalse(containsAny(null, s));
 
-  //   // * test that an empty target always returns false (contains nothing)
-  //   assertFalse(containsAny("", s));
-
-  //   // * test that a null source always returns false (contains nothing)
-  //   assertFalse(containsAny(s, null));
-
-  //   // * test that an empty target always returns false (contains nothing)
-  //   assertFalse(containsAny(s, ""));
-
-  //   // * test that contains() returns true when the target contains the source
-  //   assertTrue(containsAny(s, "hx"));
-  //   assertTrue(containsAny(s, "h"));
-  //   assertTrue(containsAny(s, "qe"));
-
-  //   // * and false otherwise
-  //   assertFalse(containsAny(s, "x"));
-  //   assertFalse(containsAny(s, "q"));
-
-  // }
+  }
 
 }

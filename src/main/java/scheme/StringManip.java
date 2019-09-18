@@ -8,6 +8,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
+/**
+ * Utility class which provides functions for working with {@link String}s
+ * within <em>scheme</em>.
+ */
 public class StringManip {
 
   // * private default constructor because this is a utility class
@@ -279,7 +283,7 @@ public class StringManip {
     char firstChar = s.charAt(0);  char lastChar = s.charAt(slen-1);
 
     // slen > 1 because "'" should be returned as <Character, "'">
-    if (slen > 1 && (firstChar == '"' || firstChar == '\'') && firstChar == lastChar) {
+    if (slen > 1 && firstChar == lastChar && (firstChar == '"' || firstChar == '\'')) {
       s = s.substring(1, slen-1).trim(); // remove surrounding quotes
       slen = s.length();
     }
