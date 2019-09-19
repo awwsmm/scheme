@@ -53,7 +53,7 @@ def CSVtoParquet[_](filename: String): org.apache.spark.sql.Dataset[_] = {
     // get Spark types as a Seq
     val sparkTypes = javaSchema.map(e => JavatoSpark(e.getValue.toString)).toSeq
 
-	// get the header extents
+  	// get the header extents
     val headerExtents = CSV.headerExtents()
 
     // create our custom DataFrame by...

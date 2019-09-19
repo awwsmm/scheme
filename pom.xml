@@ -48,6 +48,21 @@
   <build>
     <plugins>
 
+      <!-- declare main class so scheme can be used on the CLI -->
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.2</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>scheme.CSV</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
       <!-- for JaCoCo code coverage report -->
 
       <plugin>
@@ -125,8 +140,6 @@
           <!-- for GitHub pages -->
           <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
           <destDir>docs</destDir>
-
-          <detectLinks>true</detectLinks>
         </configuration>
 
       </plugin>

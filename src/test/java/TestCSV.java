@@ -1,10 +1,7 @@
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static scheme.CSV.*;
+import static scheme.CSV.schema;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +9,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map.Entry;
+
+import org.junit.jupiter.api.Test;
 
 public class TestCSV {
 

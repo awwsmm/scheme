@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.time.LocalDateTime;
 
 /**
  * Class for working with comma-separated values (CSVs) within <em>scheme</em>.
@@ -25,6 +25,43 @@ public class CSV {
 
   // private default constructor because this is a utility class
   private CSV(){}
+
+  /**
+   * Main class for using <em>scheme</em> on the CLI.
+   *
+   * <p>Prints file schemata to the standard output device.</p>
+   *
+   * <p><strong>Usage:</strong></p>
+   *
+   * <pre>{@code
+   * $ java --class-path scheme-1.0.jar <csvfile.csv>
+   * }</pre>
+   *
+   * @param args list of CSV files for which schema should be determined
+   *
+   */
+  public static void main (String[] args) {
+
+    for (String arg : args) {
+
+      System.out.println();
+
+      try {
+        List<Entry<String, Class<?>>> schema = schema(arg);
+        System.out.println("file: '" + arg + "' schema:\n");
+        schema.stream().forEach(System.out::println);
+
+      } catch (FileNotFoundException ex) {
+        System.out.println("file: '" + arg + "' not found");
+
+      } catch (IOException ex) {
+        System.out.println("error reading file: '" + arg + "'");
+      }
+
+      System.out.println();
+    }
+
+  }
 
   /**
    * Parses a single line of text as CSV and returns the parsed tokens in a
@@ -104,11 +141,11 @@ public class CSV {
   /**
    * Returns the extents (line / row indices) which define the header region of
    * the most recently-analysed CSV file.
-   * 
+   *
    * <p>Returns {@code int[]{-1, -1}} if no header region was found. Otherwise,
    * if both array elements are equal, then the header is just a single line.</p>
-   * 
-   * @return a two-element {@link int} array giving the first (inclusive) and
+   *
+   * @return a two-element {@code int} array giving the first (inclusive) and
    * last (exclusive) row index (0-based) of the header region
    */
   public static int[] headerExtents() {
@@ -123,9 +160,9 @@ public class CSV {
    * Works just like
    * {@link #schema(String, boolean, boolean, boolean, boolean) schema()},
    * but {@code bool01}, {@code commonTypes}, {@code postfixFL}, and
-   * {@code parseDates} are set to {@code false}, {@code false}, {@code false}, 
+   * {@code parseDates} are set to {@code false}, {@code false}, {@code false},
    * and {@code true}, respectively.
-   * 
+   *
    * @param file the path of the CSV file to parse
    * @return a {@code List<Entry<String, Class<?>>>} describing the schema of
    * this CSV file, where the {@link String} of each entry is the inferred
@@ -144,13 +181,13 @@ public class CSV {
    * {@link #schema(String, int, int, int, boolean, boolean, boolean, boolean) schema()},
    * but {@code firstHeaderRowIndex}, {@code lastHeaderRowIndex}, and
    * {@code nTestRows} are set to -1, -1, and 35, respectively.
-   * 
+   *
    * <p>Setting {@code firstHeaderRowIndex} and {@code lastHeaderRowIndex} to -1
    * indicates that those values will be inferred by
    * {@link #schema(String, int, int, int, boolean, boolean, boolean, boolean) schema()},
    * which performs an analysis of row types to determine the header row
    * extents.</p>
-   * 
+   *
    * @param file the path of the CSV file to parse
    * @param bool01 if {@code true}, {@code '0'} and {@code '1'} are interpreted
    * as {@code boolean}s
@@ -179,23 +216,23 @@ public class CSV {
   /**
    * Given a path to a CSV {@code file}, and a list of options, this method
    * attempts to determine the schema of the data contained within the file.
-   * 
+   *
    * <p>The schema is a {@link List} of {@link Entry}s, where each {@code Entry}
    * contains two values, (1) a {@link String} column name, and (2) a
    * {@link Class} that's been inferred from the type of data contained
    * within that column.</p>
-   * 
+   *
    * <p>If the user provides an invalid {@code firstHeaderRowIndex} or
    * {@code lastHeaderRowIndex}, the columns will be labeled {@code X1...XN},
    * where {@code N} is the number of columns in the file.</p>
-   * 
+   *
    * <p>The minimum number of rows required to analyse and make a decent guess
    * at the type of data contained within a column is 7. This, plus a 10-row
    * metadata / header row buffer, is the minimum number of rows to be analysed.
    * If the user provides a value for {@code nTestRows} that is less than 17,
    * it will be increased to 17. Increase this value for a more confident guess
    * at the type of data contained within a column.</p>
-   * 
+   *
    * @param file the path of the CSV file to parse
    * @param firstHeaderRowIndex a fixed row / line index (0-based) for the
    * beginning of the column header region
